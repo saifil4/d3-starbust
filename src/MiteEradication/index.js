@@ -6,25 +6,7 @@ import { MiteEradicationData } from "./exmaple_data";
 import _ from "lodash";
 
 const MiteEradication = () => {
-  const getChildren = (value) => {
-    if (value >= 0 && value < 4) {
-      return {
-        label: "1 to 3.99",
-        value: value,
-      };
-    } else if (value >= 4 && value < 7) {
-      return {
-        label: "4 to 6.99",
-        value: value,
-      };
-    } else if (value >= 7 && value <= 10) {
-      return {
-        label: "7 to 10",
-        value: value,
-      };
-    }
-  };
-
+ 
   const groups = _.uniqBy(MiteEradicationData, "group");
 
   const formattedData = groups.map((item) => {
@@ -60,8 +42,6 @@ const MiteEradication = () => {
     name: "Mite Eradication",
     children: formattedData,
   };
-
-  console.log(formattedData);
 
   return (
     <Container>
