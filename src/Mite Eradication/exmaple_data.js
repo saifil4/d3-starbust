@@ -1,4 +1,4 @@
-const data = [
+export const MiteEradicationData = [
   {
     patient: 1,
     group: "TP03",

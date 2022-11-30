@@ -32,7 +32,8 @@ var nodeData = {
   ],
 };
 
-const StarBurst = () => {
+const StarBurst = ({ data }) => {
+  
   useEffect(() => {
     const createChart = () => {
       const width = 500;
@@ -48,13 +49,12 @@ const StarBurst = () => {
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-      console.log(g);
       // Data strucure
       const partition = d3.partition().size([2 * Math.PI, radius]);
 
       // Find data root
-      const root = d3.hierarchy(nodeData).sum(function (d) {
-        return d.size;
+      const root = d3.hierarchy(data).sum(function (d) {
+        return d.value;
       });
 
       // Size arcs
