@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 import * as d3 from "d3";
 
 const StarBurst = ({ data }) => {
+
+  console.log(data)
+
   const width = 600;
   const radius = width / 6;
 
@@ -163,7 +166,7 @@ const StarBurst = ({ data }) => {
     };
 
     createChart();
-  }, []);
+  }, [data]);
 
   return (
     <div>
