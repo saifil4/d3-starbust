@@ -1,9 +1,10 @@
-function App() {
+import StarBurst from "./starburst";
 
-  const a =(`"{",A1,":",A2,B1,":",A2"}"`)
+function App() {
 
   return (
     <div>
+      <StarBurst/>
     </div>
   );
 }
