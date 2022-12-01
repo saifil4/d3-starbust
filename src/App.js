@@ -12,6 +12,6 @@ function App() {
 export default App;
 
 const AppContainer = styled.div`
-  background: #14466b;
+  background: #181818;
   height: 100vh;
 `;

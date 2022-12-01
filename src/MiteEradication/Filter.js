@@ -5,27 +5,21 @@ import styled from "styled-components";
 const Filter = ({ miteGroups, handleCheck }) => {
   
   return (
-    <FilterContainer>
       <Form>
-        <h6>Groups</h6>
+        <h5>Groups</h5>
         {miteGroups &&
           miteGroups.map((mg) => (
             <Form.Check
               onChange={()=>handleCheck(mg.patient)}
+              inline
               checked={mg.isChecked}
               type="switch"
               label={mg.group}
             />
           ))}
       </Form>
-    </FilterContainer>
   );
 };
 
 export default Filter;
 
-const CustomSwitch = styled(Form.Check)``;
-
-const FilterContainer = styled.div`
-  color: white;
-`;

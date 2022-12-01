@@ -1,13 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
-import StarBurst from "../starburst";
-import { Container, Row, Col } from "react-bootstrap";
-import Filter from "./Filter";
-import { MiteEradicationData } from "./exmaple_data";
+import styled from "styled-components";
 import _ from "lodash";
+import { Container, Row, Col } from "react-bootstrap";
+import { MiteEradicationData } from "./exmaple_data";
+import StarBurst from "../starburst";
+import Filter from "./Filter";
+import DataTable from "./DataTable";
 
 const MiteEradication = () => {
   const [miteData, setMiteData] = useState(MiteEradicationData);
-
   const [miteGroups, setMiteGroups] = useState();
   const [filteredMiteGroups, setFilteredMiteGroups] = useState();
 
@@ -72,17 +73,40 @@ const MiteEradication = () => {
   };
 
   return (
-    <Container>
-      <Row>
-        <Col>
+    <FullHeightContainer>
+      <FullHeightRow>
+        <FullHeightColumn className="justify-end">
           <StarBurst data={formattedData} />
-        </Col>
-        <Col>
-          <Filter miteGroups={miteGroups} handleCheck={handleCheck} />
-        </Col>
-      </Row>
-    </Container>
+        </FullHeightColumn>
+        <FullHeightColumn>
+          <DetailContainer>
+            <Filter miteGroups={miteGroups} handleCheck={handleCheck} />
+            <DataTable miteData={miteData} />
+          </DetailContainer>
+        </FullHeightColumn>
+      </FullHeightRow>
+    </FullHeightContainer>
   );
 };
 
 export default MiteEradication;
+
+const FullHeightRow = styled(Row)`
+  height: 100%;
+`;
+
+const FullHeightContainer = styled(Container)`
+  height: 100%;
+`;
+const FullHeightColumn = styled(Col)`
+  height: 100%;
+`;
+
+const DetailContainer = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  row-gap: 10px;
+  padding: 25px 0;
+`;
