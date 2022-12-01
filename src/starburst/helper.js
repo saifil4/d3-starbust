@@ -13,10 +13,10 @@ export const getArc = (radius) => {
     .arc()
     .startAngle((d) => d.x0)
     .endAngle((d) => d.x1)
-    .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
+    .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.015))
     .padRadius(radius * 1.5)
     .innerRadius((d) => d.y0 * radius)
-    .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
+    .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 2))
 };
 
 export const isArcVisible = (d) => {

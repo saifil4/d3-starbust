@@ -9,17 +9,43 @@ import DataTable from "./DataTable";
 
 const MiteEradication = () => {
   const [miteData, setMiteData] = useState(MiteEradicationData);
+  const [filteredMiteData, setFilteredMiteData] = useState(MiteEradicationData);
   const [miteGroups, setMiteGroups] = useState();
+  const [selectedAge, setSelectedAge] = useState(null);
+  const [completed, setCompleted] = useState(null);
   const [filteredMiteGroups, setFilteredMiteGroups] = useState();
+
+  const ageDemoGraphics = [
+    { id: 0, group: "Less than 18", min: 0, max: 18 },
+    { id: 1, group: "18 to 34", min: 18, max: 34 },
+    { id: 2, group: "35 to 44", min: 35, max: 44 },
+    { id: 3, group: "45 to 54", min: 45, max: 54 },
+    { id: 4, group: "55 and above", min: 0, max: 18 },
+  ];
+
+  useEffect(() => {
+    let values = miteData;
+    if (selectedAge) {
+      const ageValue = ageDemoGraphics.find((age) => age.id === selectedAge);
+      console.log(ageValue);
+      values = values.filter(
+        (md) => md.age >= ageValue.min && md.age < ageValue.max
+      );
+    }
+    if (completed) {
+      values = values.filter((md) => md.completed === completed);
+    }
+    setFilteredMiteData(values);
+  }, [selectedAge, completed, miteData]);
 
   useEffect(() => {
     setMiteGroups(
-      _.uniqBy(miteData, "group").map((mg) => ({
+      _.uniqBy(filteredMiteData, "group").map((mg) => ({
         ...mg,
         isChecked: true,
       }))
     );
-  }, [miteData]);
+  }, [filteredMiteData]);
 
   useEffect(() => {
     if (miteGroups) {
@@ -30,7 +56,7 @@ const MiteEradication = () => {
   }, [miteGroups]);
 
   const formattedData = useMemo(() => {
-    if (!filteredMiteGroups) return { name: "Mite Eradication", children: [] };
+    if (!filteredMiteGroups) return null;
     return {
       name: "Mite Eradication",
       children: filteredMiteGroups.map((item) => {
@@ -39,21 +65,21 @@ const MiteEradication = () => {
           children: [
             {
               name: "0 to 4 mites",
-              value: miteData.filter(
+              value: filteredMiteData.filter(
                 ({ group, mites_bl }) =>
                   group === item.group && mites_bl >= 0 && mites_bl < 4
               ).length,
             },
             {
               name: "4 to 7 mites",
-              value: miteData.filter(
+              value: filteredMiteData.filter(
                 ({ group, mites_bl }) =>
                   group === item.group && mites_bl >= 4 && mites_bl < 7
               ).length,
             },
             {
               name: "7 to 10 mites",
-              value: miteData.filter(
+              value: filteredMiteData.filter(
                 ({ group, mites_bl }) =>
                   group === item.group && mites_bl >= 7 && mites_bl <= 10
               ).length,
@@ -62,7 +88,7 @@ const MiteEradication = () => {
         };
       }),
     };
-  }, [miteData, filteredMiteGroups]);
+  }, [filteredMiteData, filteredMiteGroups]);
 
   const handleCheck = (id) => {
     setMiteGroups(
@@ -72,16 +98,31 @@ const MiteEradication = () => {
     );
   };
 
+  const handleAgeChange = (id) => {
+    setSelectedAge(id);
+  };
+  const handleCompletedChange = (id) => {
+    setCompleted(id);
+  };
+
   return (
     <FullHeightContainer>
       <FullHeightRow>
         <FullHeightColumn className="justify-end">
-          <StarBurst data={formattedData} />
+          {formattedData && <StarBurst data={formattedData} />}
         </FullHeightColumn>
         <FullHeightColumn>
           <DetailContainer>
-            <Filter miteGroups={miteGroups} handleCheck={handleCheck} />
-            <DataTable miteData={miteData} />
+            <Filter
+              miteGroups={miteGroups}
+              handleCheck={handleCheck}
+              handleAgeChange={handleAgeChange}
+              handleCompletedChange={handleCompletedChange}
+              ageDemoGraphics={ageDemoGraphics}
+              selectedAge={selectedAge}
+              completed={completed}
+            />
+            <DataTable miteData={filteredMiteData} />
           </DetailContainer>
         </FullHeightColumn>
       </FullHeightRow>

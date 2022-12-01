@@ -10,9 +10,6 @@ import {
 } from "./helper";
 
 const StarBurst = ({ data }) => {
-  const svgRef = useRef(null);
-  const svgContainer = useRef(null);
-
   const width = 600;
   const radius = width / 6;
 
@@ -46,12 +43,11 @@ const StarBurst = ({ data }) => {
         return color(d.data.name);
       })
       .attr("fill-opacity", (d) =>
-        isArcVisible(d.current) ? (d.children ? 1 : 0.7) : 0
+        isArcVisible(d.current) ? (d.children ? 1 : 0.6) : 0
       )
-      .attr("pointer-events", (d) =>
-        isArcVisible(d.current) ? "auto" : "none"
-      )
-      .attr("d", (d) => arc(d.current));
+      .attr("d", (d) => arc(d.current))
+
+ 
 
     path.append("title").text(
       (d) =>
@@ -65,11 +61,12 @@ const StarBurst = ({ data }) => {
     g.append("g")
       .attr("pointer-events", "none")
       .attr("text-anchor", "middle")
-      .style("user-select", "none")
       .selectAll("text")
       .data(root.descendants().slice(1))
       .join("text")
       .attr("dy", "0.35em")
+      .attr("fill", "#fff")
+      .attr("text-shadow", "1px 1px 5px #000")
       .attr("fill-opacity", (d) => +isLabelVisible(d.current))
       .attr("transform", (d) => getTransformedLabel(d.current, radius))
       .text((d) => d.data.name);
@@ -83,7 +80,8 @@ const StarBurst = ({ data }) => {
 
   return (
     <StarBurstContainer>
-      <svg ref={svgRef} />
+      <svg />
+      <h5>Mite Eradication</h5>
     </StarBurstContainer>
   );
 };
@@ -94,4 +92,8 @@ const StarBurstContainer = styled.div`
   display: flex;
   height: 100%;
   align-items: center;
+  flex-direction: column;
+  color: white;
+  justify-content: center;
+  row-gap: 10px;
 `;
