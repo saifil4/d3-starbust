@@ -1,44 +1,35 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import {
+  getPartition,
+  getArc,
+  isArcVisible,
+  isLabelVisible,
+  getTransformedLabel,
+} from "./helper";
 
 const StarBurst = ({ data }) => {
-
-  console.log(data)
-
   const width = 600;
   const radius = width / 6;
 
-  const partition = (data) => {
-    const root = d3
-      .hierarchy(data)
-      .sum((d) => d.value)
-      .sort((a, b) => b.value - a.value);
-    return d3.partition().size([2 * Math.PI, root.height + 1])(root);
-  };
-
-  const arc = d3
-    .arc()
-    .startAngle((d) => d.x0)
-    .endAngle((d) => d.x1)
-    .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
-    .padRadius(radius * 1.5)
-    .innerRadius((d) => d.y0 * radius)
-    .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
-
+  const arc = getArc(radius);
   const format = d3.format(",d");
-
   const color = d3.scaleOrdinal(
     d3.quantize(d3.interpolateRainbow, data.children.length + 1)
   );
 
   useEffect(() => {
     const createChart = () => {
-      const root = partition(data);
+      const root = getPartition(data);
 
       root.each((d) => (d.current = d));
 
-      const g = d3
-        .select("svg")
+      const svg = d3.select("svg");
+
+      const everything = svg.selectAll("*");
+      everything.remove();
+
+      const g = svg
         .attr("width", width)
         .attr("height", width)
         .append("g")
@@ -54,12 +45,11 @@ const StarBurst = ({ data }) => {
           return color(d.data.name);
         })
         .attr("fill-opacity", (d) =>
-          arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
+          isArcVisible(d.current) ? (d.children ? 1 : 0.7) : 0
         )
         .attr("pointer-events", (d) =>
-          arcVisible(d.current) ? "auto" : "none"
+          isArcVisible(d.current) ? "auto" : "none"
         )
-
         .attr("d", (d) => arc(d.current));
 
       path
@@ -85,8 +75,8 @@ const StarBurst = ({ data }) => {
         .data(root.descendants().slice(1))
         .join("text")
         .attr("dy", "0.35em")
-        .attr("fill-opacity", (d) => +labelVisible(d.current))
-        .attr("transform", (d) => labelTransform(d.current))
+        .attr("fill-opacity", (d) => +isLabelVisible(d.current))
+        .attr("transform", (d) => getTransformedLabel(d.current, radius))
         .text((d) => d.data.name);
 
       const parent = g
@@ -127,41 +117,28 @@ const StarBurst = ({ data }) => {
             const i = d3.interpolate(d.current, d.target);
             return (t) => (d.current = i(t));
           })
-          .filter(function (d) {
-            return +this.getAttribute("fill-opacity") || arcVisible(d.target);
-          })
+          .filter(
+            (d) => +this.getAttribute("fill-opacity") || isArcVisible(d.target)
+          )
           .attr("fill-opacity", (d) =>
-            arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0
+            isArcVisible(d.target) ? (d.children ? 1 : 0.7) : 0
           )
           .attr("pointer-events", (d) =>
-            arcVisible(d.target) ? "auto" : "none"
+            isArcVisible(d.target) ? "auto" : "none"
           )
-
           .attrTween("d", (d) => () => arc(d.current));
 
         label
-          .filter(function (d) {
-            return +this.getAttribute("fill-opacity") || labelVisible(d.target);
-          })
+          .filter(
+            (d) =>
+              +this.getAttribute("fill-opacity") || isLabelVisible(d.target)
+          )
           .transition(t)
-          .attr("fill-opacity", (d) => +labelVisible(d.target))
-          .attrTween("transform", (d) => () => labelTransform(d.current));
-      }
-
-      function arcVisible(d) {
-        return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
-      }
-
-      function labelVisible(d) {
-        return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
-      }
-
-      function labelTransform(d) {
-        const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
-        const y = ((d.y0 + d.y1) / 2) * radius;
-        return `rotate(${x - 90}) translate(${y},0) rotate(${
-          x < 180 ? 0 : 180
-        })`;
+          .attr("fill-opacity", (d) => +isLabelVisible(d.target))
+          .attrTween(
+            "transform",
+            (d) => () => getTransformedLabel(d.current, radius)
+          );
       }
     };
 

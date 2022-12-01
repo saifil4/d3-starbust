@@ -7,16 +7,6 @@ const Filter = ({ miteGroups, handleCheck }) => {
   return (
     <FilterContainer>
       <Form>
-        <CustomSwitch
-          type="switch"
-          id="custom-switch"
-          label="Check this switch"
-        />
-        <CustomSwitch
-          type="switch"
-          label="disabled switch"
-          id="disabled-custom-switch"
-        />
         <h6>Groups</h6>
         {miteGroups &&
           miteGroups.map((mg) => (
