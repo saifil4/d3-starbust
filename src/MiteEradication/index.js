@@ -8,8 +8,6 @@ import Filter from "./Filter";
 import DataTable from "./DataTable";
 
 const MiteEradication = () => {
-  const [miteData, setMiteData] = useState(MiteEradicationData);
-  const [filteredMiteData, setFilteredMiteData] = useState(MiteEradicationData);
   const [miteGroups, setMiteGroups] = useState();
   const [selectedAge, setSelectedAge] = useState(null);
   const [completed, setCompleted] = useState(null);
@@ -20,32 +18,31 @@ const MiteEradication = () => {
     { id: 1, group: "18 to 34", min: 18, max: 34 },
     { id: 2, group: "35 to 44", min: 35, max: 44 },
     { id: 3, group: "45 to 54", min: 45, max: 54 },
-    { id: 4, group: "55 and above", min: 0, max: 18 },
+    { id: 4, group: "55 and above", min: 55, max: 100 },
   ];
 
-  useEffect(() => {
-    let values = miteData;
-    if (selectedAge) {
+  const filteredMiteData = useMemo(() => {
+    let values = MiteEradicationData;
+    if (!_.isNil(selectedAge)) {
       const ageValue = ageDemoGraphics.find((age) => age.id === selectedAge);
-      console.log(ageValue);
       values = values.filter(
         (md) => md.age >= ageValue.min && md.age < ageValue.max
       );
     }
-    if (completed) {
+    if (!_.isNil(completed)) {
       values = values.filter((md) => md.completed === completed);
     }
-    setFilteredMiteData(values);
-  }, [selectedAge, completed, miteData]);
+    return values;
+  }, [selectedAge, completed]);
 
   useEffect(() => {
     setMiteGroups(
-      _.uniqBy(filteredMiteData, "group").map((mg) => ({
+      _.uniqBy(MiteEradicationData, "group").map((mg) => ({
         ...mg,
         isChecked: true,
       }))
     );
-  }, [filteredMiteData]);
+  }, []);
 
   useEffect(() => {
     if (miteGroups) {
@@ -60,28 +57,28 @@ const MiteEradication = () => {
     return {
       name: "Mite Eradication",
       children: filteredMiteGroups.map((item) => {
+        const groupItems = filteredMiteData.filter(
+          ({ group }) => group === item.group
+        );
         return {
           name: item.group,
           children: [
             {
               name: "0 to 4 mites",
-              value: filteredMiteData.filter(
-                ({ group, mites_bl }) =>
-                  group === item.group && mites_bl >= 0 && mites_bl < 4
+              value: groupItems.filter(
+                ({ mites_bl }) => mites_bl >= 0 && mites_bl < 4
               ).length,
             },
             {
               name: "4 to 7 mites",
-              value: filteredMiteData.filter(
-                ({ group, mites_bl }) =>
-                  group === item.group && mites_bl >= 4 && mites_bl < 7
+              value: groupItems.filter(
+                ({ mites_bl }) => mites_bl >= 4 && mites_bl < 7
               ).length,
             },
             {
               name: "7 to 10 mites",
-              value: filteredMiteData.filter(
-                ({ group, mites_bl }) =>
-                  group === item.group && mites_bl >= 7 && mites_bl <= 10
+              value: groupItems.filter(
+                ({ mites_bl }) => mites_bl >= 7 && mites_bl <= 10
               ).length,
             },
           ],
