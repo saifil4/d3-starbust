@@ -1,6 +1,5 @@
 import React from "react";
 import { Form } from "react-bootstrap";
-import styled from "styled-components";
 
 const Filter = ({
   miteGroups,
@@ -15,8 +14,9 @@ const Filter = ({
     <Form>
       <h6>Groups</h6>
       {miteGroups &&
-        miteGroups.map((mg) => (
+        miteGroups.map((mg, index) => (
           <Form.Check
+            key={index}
             onChange={() => handleCheck(mg.patient)}
             inline
             checked={mg.isChecked}
@@ -33,8 +33,9 @@ const Filter = ({
         type="radio"
         label="All"
       />
-      {ageDemoGraphics.map((age) => (
+      {ageDemoGraphics.map((age, index) => (
         <Form.Check
+          key={index}
           onChange={() => handleAgeChange(age.id)}
           inline
           checked={selectedAge === age.id}

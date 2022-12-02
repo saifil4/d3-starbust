@@ -15,8 +15,8 @@ const DataTable = ({ miteData }) => {
           </tr>
         </thead>
         <tbody>
-          {miteData.map((md) => (
-            <tr>
+          {miteData.map((md, index) => (
+            <tr key={index}>
               <td>{md.patient}</td>
               <td>{md.group}</td>
               <td>{md.mites_bl}</td>

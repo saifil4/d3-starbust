@@ -14,7 +14,6 @@ const MiteEradication = () => {
   const [filteredMiteGroups, setFilteredMiteGroups] = useState();
 
   const ageDemoGraphics = [
-    { id: 0, group: "Less than 18", min: 0, max: 18 },
     { id: 1, group: "18 to 34", min: 18, max: 34 },
     { id: 2, group: "35 to 44", min: 35, max: 44 },
     { id: 3, group: "45 to 54", min: 45, max: 54 },

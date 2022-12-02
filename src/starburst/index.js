@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import * as d3 from "d3";
 import styled from "styled-components";
 import {
@@ -59,23 +59,21 @@ const StarBurst = ({ data }) => {
     );
 
     g.append("g")
-      .attr("pointer-events", "none")
       .attr("text-anchor", "middle")
       .selectAll("text")
       .data(root.descendants().slice(1))
       .join("text")
       .attr("dy", "0.35em")
       .attr("fill", "#fff")
-      .attr("text-shadow", "1px 1px 5px #000")
       .attr("fill-opacity", (d) => +isLabelVisible(d.current))
       .attr("transform", (d) => getTransformedLabel(d.current, radius))
       .text((d) => d.data.name);
 
-    g.append("circle")
-      .datum(root)
-      .attr("r", radius)
-      .attr("fill", "none")
-      .attr("pointer-events", "all");
+    // g.append("circle")
+    //   .datum(root)
+    //   .attr("r", radius)
+    //   .attr("fill", "none")
+    //   .attr("pointer-events", "all");
   }, [data]);
 
   return (

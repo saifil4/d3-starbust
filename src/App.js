@@ -1,4 +1,3 @@
-import StarBurst from "./starburst";
 import MiteEradication from "./MiteEradication";
 import styled from "styled-components";
 function App() {
