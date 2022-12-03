@@ -1,4 +1,4 @@
-import MiteEradication from "./MiteEradication";
+import MiteEradication from "./mite-eradication";
 import styled from "styled-components";
 function App() {
   return (
